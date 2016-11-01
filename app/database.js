@@ -10,21 +10,21 @@ var initialData = {
         },
         "2": {
             "_id": 2,
-            "fullName": "Someone",
+            "fullName": "Someone Else",
             "feed": 2
         },
         "3": {
             "_id": 3,
-            "fullName": "Someone",
+            "fullName": "Another Person",
             "feed": 3
         },
         "4": {
             "_id": 4,
-            "fullName": "Someone",
+            "fullName": "John Vilk",
             "feed": 4
         }
     },
-    "feeditems": {
+    "feedItems": {
         "1": {
             "_id": 1,
             "likeCounter": [2, 3],

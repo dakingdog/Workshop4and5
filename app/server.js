@@ -9,9 +9,9 @@ function emulateServerReturn(data, cb) {
     cb(data);
   }, 4);
 }
- function getFeedItemSync (feedItemID) {
+ function getFeedItemSync (feedItemId) {
     // body...  
-    var feedItem= readDocument('feedItems', feedItemID);
+    var feedItem= readDocument('feedItems', feedItemId);
     feedItem.likeCounter=
       feedItem.likeCounter.map((id) => readDocument('users', id));
     feedItem.contents.author=readDocument('users', feedItem.contents.author);
