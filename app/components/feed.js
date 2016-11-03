@@ -2,6 +2,7 @@ import React from 'react';
 import FeedItem from './feeditem';
 import StatusUpdateEntry from './statusupdateentry';
 import { getFeedData } from '../server';
+import { postStatusUpdate } from '../server'
 
 export default class Feed extends React.Component {
   constructor(props) {
@@ -10,10 +11,20 @@ export default class Feed extends React.Component {
       contents: []
     };
   }
+  refresh() {
+    getFeedData(this.props.user, (feedData) => {
+      this.setState(feedData);
+    });
+  }
+  onPost(postContents) {
+    postStatusUpdate(4, "Amherst, MA", postContents, () => {
+      this.refresh();
+    });
+  }
   render() {
     return (
       <div>
-        <StatusUpdateEntry />
+        <StatusUpdateEntry onPost={(postContents) => this.onPost(postContents)}/>
         { this.state.contents.map((feedItem) => {
             return (
               <FeedItem
@@ -25,8 +36,6 @@ export default class Feed extends React.Component {
     )
   }
   componentDidMount() {
-    getFeedData(this.props.user, (feedData) => {
-      this.setState(feedData);
-    });
+    this.refresh();
   }
 }
