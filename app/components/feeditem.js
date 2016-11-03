@@ -5,10 +5,36 @@ import Comment from './comment';
 import { postComment } from '../server'
 import { likeFeedItem } from '../server'
 import { unlikeFeedItem } from '../server'
+import { likeComment } from '../server'
+import { unlikeComment } from '../server'
 export default class FeedItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = props.data;
+  }
+  handleCommentLike(e, i) {
+    e.preventDefault();
+    if (e.button == 0) {
+      var callBackFunction = (updateCommentLikes) => {
+        this.setState(updateCommentLikes);
+      };
+      if (this.didUserLikeComment(i)) {
+        unlikeComment(this.state._id, 4, i, callBackFunction);
+      } else {
+        likeComment(this.state._id, 4, i, callBackFunction);
+      }
+    }
+  }
+  didUserLikeComment(i) {
+    var likeCounter = this.state.comments[i].likeCounter;
+    var liked = false;
+    for (var x = 0; x < likeCounter.length; x++) {
+      if (likeCounter[x] === 4) {
+        liked = true;
+        break;
+      }
+    }
+    return liked;
   }
   handleLikeClick(clickEvent) {
     // Stop the event from propagating up the DOM
@@ -63,6 +89,17 @@ export default class FeedItem extends React.Component {
       this.setState(updatedFeedItem);
     });
   }
+  didUserLikeCommentText(i) {
+    var likeCounter = this.state.comments[i].likeCounter;
+    var liked = "Like";
+    for (var x = 0; x < likeCounter.length; x++) {
+      if (likeCounter[x] === 4) {
+        liked = "Unlike";
+        break;
+      }
+    }
+    return liked;
+  }
   render() {
     var likeButtonText = "Like";
     if (this.didUserLike()) {
@@ -102,7 +139,7 @@ export default class FeedItem extends React.Component {
                 <li>
                   <a
                      href="#"
-                     onClick={ (e) => this.handleLikeClick(e) }><span className="glyphicon glyphicon-thumbs-up"></span> Like</a>
+                     onClick={ (e) => this.handleLikeClick(e) }><span className="glyphicon glyphicon-thumbs-up"></span> { likeButtonText }</a>
                 </li>
                 <li>
                   <a href="#"><span className="glyphicon glyphicon-comment"></span> Comment</a>
@@ -128,8 +165,11 @@ export default class FeedItem extends React.Component {
                 return (
                   <Comment
                            key={ i }
+                           onClick={ (e) => this.handleCommentLike(e, i) }
                            author={ comment.author }
-                           postDate={ comment.postDate }>
+                           postDate={ comment.postDate }
+                           likeCounter={ comment.likeCounter }
+                           comLikeText={ this.didUserLikeCommentText(i) }>
                     { comment.contents }
                   </Comment>
                   );
